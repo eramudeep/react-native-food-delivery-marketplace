@@ -1,0 +1,244 @@
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
+import { scale } from 'react-native-size-matters'
+import TouchableRipple from 'react-native-touch-ripple'
+import { useDispatch, useSelector } from 'react-redux'
+import NormalContainer from '../../../components/Container/NormalContainer'
+import CustomButton from '../../../components/CustomButton'
+import CustomCheck from '../../../components/CustomCheck'
+import Empty from '../../../components/Empty'
+import Header from '../../../components/Header'
+import ShopHeader from '../../../components/Header/ShopHeader'
+import ConfirmationModal from '../../../components/Modals/ConfirmationModal'
+import SnapCarousel from '../../../components/SnapCarousel'
+import ICBag from '../../../components/SVG/ICBag'
+import ICChecked from '../../../components/SVG/ICChecked'
+import ICClose from '../../../components/SVG/ICClose'
+import { changeOrderStatus, getOrder, getOrderReceived } from '../../../redux/actions'
+import { appColors } from '../../../utils/appColors'
+import { dateTimeFormat, isValidDate } from '../../../utils/common'
+
+const variations = ["Halal", "Contain Nuts", "Egg Free", "Veg"]
+export default function SellerOrders({ navigation }) {
+    const dispatch = useDispatch()
+    const { receivedOrders ,} = useSelector(state => state.kitchen)
+    const [currentOrders, setCurrentOrders] = useState([])
+    const [modalVisible, setModalVisible] = useState(false)
+    const toggleModal = () => {
+        setModalVisible(previousState => !previousState);
+    }
+    
+    useEffect(() => {
+        // let ord = []
+        // for (let val in orders) {
+        //     if (orders[val].status === 'current'||) {
+        //         ord.push(orders[val])
+        //     }
+        // }
+        // setCurrentOrders([...ord])
+    }, [receivedOrders])
+    useEffect(() => {
+        dispatch(getOrderReceived())
+        console.log("use eff");
+
+    }, [])
+
+    const onChangeStatus =(status)=>{
+        console.log(status);
+        dispatch(changeOrderStatus({status}))
+    }
+
+    return (
+        <NormalContainer  >
+            <View style={{ flex: 1 }}>
+                <ScrollView>
+                    {
+                        receivedOrders?.reverse().map((val, key) => {
+                            // console.log("val -=-=", val.orderOn.toDate());
+                            return (
+                                <View key={key} style={styles.item}>
+                                    <View style={styles.itemView}>
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={[styles.itemName,]}>ORDER NO: {val.id}</Text>
+                                            <View style={{ flexDirection: "row" }}>
+                                                {val.items.map((data, key) => {
+                                                    // console.log("ddata",data);
+                                                    return (
+                                                        <View key={key}>
+                                                            <Text style={[styles.itemName,]}>{data.data.itemName}{key < val.items.length - 1 && ", "}</Text>
+                                                        </View>
+                                                    )
+                                                })}
+                                            </View>
+                                            {/* <Text numberOfLines={2} style={[styles.itemName,{color:appColors.lightGray}]}>Item Description and others</Text> */}
+                                            <Text style={[styles.itemName, { color: appColors.lightGray }]}>Order on: {isValidDate(val?.orderOn)?dateTimeFormat(val?.orderOn) : dateTimeFormat(val?.orderOn?.toDate())}</Text>
+                                            <Text style={[styles.itemName,]}>£{val.price}</Text>
+                                        </View>
+                                        {/* <View style={{ backgroundColor: appColors.white ,height:scale(80),width:scale(80)}}>
+                                        <SnapCarousel autoplay/>
+                                    </View> */}
+                                    </View>
+                                    {
+                                        val.status==="PENDING" &&
+                                        <View style={{flexDirection:"row",justifyContent:"space-around",paddingBottom:scale(5)}}>
+                                    <TouchableRipple onPress={()=>onChangeStatus({status:"CURRENT",docId:val.uid})} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                        <ICChecked size={scale(26)} />
+                                        <Text style={styles.txtCancel}> ACCEPT ORDER</Text>
+                                    </TouchableRipple>
+                                    <TouchableRipple onPress={()=>onChangeStatus({status:"CANCEL",docId:val.uid})} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                        <ICClose size={scale(26)} />
+                                        <Text style={styles.txtCancel}> DECLINE ORDER</Text>
+                                    </TouchableRipple>
+                                    </View>
+                                    }
+                                    {
+                                        val.status==="CURRENT" &&
+                                        <TouchableRipple onPress={toggleModal} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                        {/* <ICClose size={scale(26)} /> */}
+                                        <Text style={styles.txtCancel}>ACCEPTED</Text>
+                                    </TouchableRipple>
+                                    }
+
+{
+                                        val.status==="CANCEL" &&
+                                        <TouchableRipple onPress={toggleModal} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                        {/* <ICClose size={scale(26)} /> */}
+                                        <Text style={styles.txtCancel}>CANCELED</Text>
+                                    </TouchableRipple>
+                                    }
+                                </View>
+                            )
+                        })
+                    }
+                    {receivedOrders?.length<1 &&<Empty message={"No current orders"}/>}
+                </ScrollView>
+            </View>
+            <ConfirmationModal
+                visible={modalVisible}
+                onConfirm={toggleModal}
+                onCancel={toggleModal}
+                message={"Are you sure want to cancel your order?"}
+            />
+        </NormalContainer>
+    )
+}
+const styles = StyleSheet.create({
+    item: {
+        marginBottom: scale(1),
+        backgroundColor: appColors.white,
+
+        borderBottomWidth: 1,
+        borderBottomColor: appColors.borderColor
+
+    },
+    title: {
+        fontFamily: "JosefinSans-Bold",
+        fontSize: scale(20),
+        paddingHorizontal: scale(20),
+        marginBottom: scale(10)
+    },
+    txtCancel: {
+        fontSize: scale(12),
+        fontFamily: "JosefinSans-Regular",
+        marginBottom: scale(3)
+    },
+    badge: {
+        height: scale(20),
+        width: scale(20),
+        borderRadius: scale(10),
+        backgroundColor: appColors.red,
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        right: scale(20)
+    },
+    badgeTxt: {
+        color: appColors.white,
+        fontFamily: "JosefinSans-SemiBold"
+    },
+    btnInner: {
+        width: scale(80),
+        height: scale(40)
+    },
+    itemName: {
+        flex: 1,
+        flexWrap: "wrap",
+        marginVertical: scale(2),
+        fontFamily: "JosefinSans-SemiBold"
+    },
+    uploadView: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        paddingHorizontal: scale(20),
+        marginTop: scale(10),
+        alignItems: "center"
+    },
+    vari: {
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        marginBottom: scale(10)
+    },
+    img: {
+        height: scale(80),
+        width: scale(80),
+        // backgroundColor: "red"
+    },
+    txtVari: {
+        paddingHorizontal: scale(5),
+        fontFamily: "JosefinSans-SemiBold",
+    },
+    itemView: {
+        flexDirection: "row",
+        paddingHorizontal: scale(20),
+        paddingVertical: scale(5),
+
+    },
+    rowBack: {
+        // alignItems: 'center',
+        backgroundColor: appColors.black22,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: "flex-end",
+        // paddingLeft: 15,
+        borderBottomColor: appColors.black22,
+        borderBottomWidth: scale(1),
+        paddingBottom: scale(1)
+    },
+    edit: {
+        backgroundColor: appColors.red,
+        alignItems: "center",
+        justifyContent: "center",
+        width: scale(80)
+        // flex:1
+    },
+    deleteTxt: {
+        fontFamily: "JosefinSans-SemiBold",
+        color: appColors.white
+    },
+    container: {
+        height: scale(50),
+        backgroundColor: appColors.secondaryColor,
+        borderRadius: scale(10),
+        margin: scale(10),
+        paddingHorizontal: scale(10),
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    center: {
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    label: {
+        color: appColors.white,
+        fontSize: scale(14),
+        fontFamily: "JosefinSans-Regular",
+        flex: 1,
+        textAlign: "center"
+    },
+    txtPrice: {
+        color: appColors.white,
+        fontSize: scale(12),
+        fontFamily: "JosefinSans-Regular",
+        textAlign: "center"
+    }
+})

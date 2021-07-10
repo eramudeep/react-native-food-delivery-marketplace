@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>888478120209-seagluupmn3rv8ltbi362h6sreq4lipv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.888478120209-seagluupmn3rv8ltbi362h6sreq4lipv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>888478120209-dkl6b63ea7rg6rjekf83vmli0e7dmhtp.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBDDSt-MIkdpmmk_aE-Wi2zcKABsHfDvPA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>888478120209</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.amusoftech.meal.empire</string>
+	<key>PROJECT_ID</key>
+	<string>mealapp-e1cf6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mealapp-e1cf6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:888478120209:ios:e2e523ed5af027de6374b0</string>
+	<key>DATABASE_URL</key>
+	<string>https://mealapp-e1cf6.firebaseio.com</string>
+</dict>
+</plist>

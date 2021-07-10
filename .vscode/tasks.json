@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "publish",
+			"problemMatcher": [],
+			"label": "npm: publish",
+			"detail": "cd android && gradlew assembleRelease",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
